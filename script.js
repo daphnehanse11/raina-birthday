@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function createConfetti() {
-        const colors = ['#FFD700', '#8B4789', '#D4A5D3', '#FF69B4', '#FFC0CB'];
+        const colors = ['#FF69B4', '#FFD700', '#FF1493', '#BA55D3', '#FFB6C1', '#FFA500', '#FF6347'];
         const confettiContainer = document.createElement('div');
         confettiContainer.style.position = 'fixed';
         confettiContainer.style.top = '0';
@@ -91,20 +91,69 @@ document.addEventListener('DOMContentLoaded', function() {
         birthdayBadge.style.cursor = 'pointer';
     }
 
-    const medicalIcon = document.querySelector('.medical-icon');
-    if (medicalIcon) {
-        medicalIcon.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.3) rotate(360deg)';
+    const birthdayIcons = document.querySelectorAll('.birthday-icon');
+    birthdayIcons.forEach((icon, index) => {
+        icon.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.5) rotate(360deg)';
             this.style.transition = 'transform 0.5s ease';
+            
+            setTimeout(() => {
+                createMiniConfetti(this);
+            }, 200);
         });
         
-        medicalIcon.addEventListener('mouseleave', function() {
+        icon.addEventListener('mouseleave', function() {
             this.style.transform = 'scale(1) rotate(0deg)';
         });
+    });
+
+    function createMiniConfetti(element) {
+        const rect = element.getBoundingClientRect();
+        const colors = ['#FF69B4', '#FFD700', '#FF1493', '#BA55D3', '#FFB6C1'];
+        
+        for (let i = 0; i < 10; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '8px';
+            confetti.style.height = '8px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = rect.left + rect.width / 2 + 'px';
+            confetti.style.top = rect.top + rect.height / 2 + 'px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.zIndex = '9999';
+            document.body.appendChild(confetti);
+
+            const angle = (Math.PI * 2 * i) / 10;
+            const velocity = 50 + Math.random() * 50;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity - 30;
+
+            let x = 0;
+            let y = 0;
+            let opacity = 1;
+
+            const animate = () => {
+                x += vx * 0.02;
+                y += vy * 0.02 + 2;
+                opacity -= 0.02;
+
+                confetti.style.transform = `translate(${x}px, ${y}px)`;
+                confetti.style.opacity = opacity;
+
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    confetti.remove();
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
     }
 
     let titleColorIndex = 0;
-    const titleColors = ['#8B4789', '#D4A5D3', '#FFD700'];
+    const titleColors = ['#FF69B4', '#FF1493', '#FFD700', '#BA55D3'];
     const nameHighlight = document.querySelector('.name-highlight');
     
     if (nameHighlight) {
